@@ -1,0 +1,32 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+//Tells Prisma you’ll be using SQLite for your database connection, along with the path to the SQLite file.
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+//Indicates that you want to generate Prisma Client.
+generator client {
+  provider = "prisma-client-js"
+}
+
+//The Link model defines the structure of the Link database table that Prisma is going to create for you in a bit. 
+//Each field in the model consists of a field name, field type and additional attributes (@id, @default, etc) that define various behavior.
+model Link {
+  id          Int      @id @default(autoincrement()) //The @id attribute signifies that the id field is the primary-key for the Link database table. The @default attribute signifies how the field is to be generated if an explicit value is not specified when creating a link record.
+  createdAt   DateTime @default(now()) //The @default attribute for createdAt also specifies the default value in case the createdAt field is not manually specified. The DateTime type follows a standard ISO 8601-formatted string (eg: 2021-11-16T21:48:39.798Z).
+  description String
+  url         String
+  postedBy    User?    @relation(fields: [postedById], references: [id])
+  postedById  Int?
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  links    Link[]
+}
